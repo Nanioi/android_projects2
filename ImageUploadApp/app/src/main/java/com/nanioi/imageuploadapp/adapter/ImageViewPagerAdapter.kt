@@ -1,4 +1,4 @@
-package com.nanioi.imageuploadapp.photo
+package com.nanioi.imageuploadapp.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import com.nanioi.imageuploadapp.databinding.ViewholderImageBinding
 import com.nanioi.imageuploadapp.extensions.loadCenterCrop
 
 class ImageViewPagerAdapter(
-    val uriList: MutableList<Uri>
+    var uriList: List<Uri>
 ) : RecyclerView.Adapter<ImageViewPagerAdapter.ImageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {

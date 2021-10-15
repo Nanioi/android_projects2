@@ -18,6 +18,7 @@ import com.nanioi.imageuploadapp.DBKey.Companion.CHILD_CHAT
 import com.nanioi.imageuploadapp.DBKey.Companion.DB_ARTICLES
 import com.nanioi.imageuploadapp.DBKey.Companion.DB_USERS
 import com.nanioi.imageuploadapp.R
+import com.nanioi.imageuploadapp.adapter.ArticleAdapter
 import com.nanioi.imageuploadapp.chatlist.ChatListItem
 import com.nanioi.imageuploadapp.databinding.FragmentHomeBinding
 
