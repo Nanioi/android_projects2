@@ -1,4 +1,4 @@
-package com.nanioi.imageuploadapp.home
+package com.nanioi.imageuploadapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanioi.imageuploadapp.databinding.ItemArticleBinding
+import com.nanioi.imageuploadapp.home.ArticleModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,9 +23,9 @@ class ArticleAdapter(val onItemClicked: (ArticleModel) -> Unit) : ListAdapter<Ar
             binding.dateTextView.text = format.format(date).toString()
             binding.contentTextView.text = articleModel.content
 
-            if (articleModel.imageUrl.isNotEmpty()) {
+            if (articleModel.imageUrlList.isNotEmpty()) {
                 Glide.with(binding.thumbnailImageView)
-                    .load(articleModel.imageUrl)
+                    .load(articleModel.imageUrlList)
                     .into(binding.thumbnailImageView)
             }
 
