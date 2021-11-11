@@ -24,6 +24,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
+import com.bumptech.glide.Glide
 import com.nanioi.cameraapp.ImageListActivity.Companion.IMAGE_LIST_REQUEST_CODE
 import com.nanioi.cameraapp.databinding.ActivityMainBinding
 import com.nanioi.cameraapp.extensions.loadCenterCrop
@@ -108,13 +109,15 @@ class MainActivity : AppCompatActivity() {
             displayId = viewFinder.display.displayId // 카메라가 보여지고 있는 display의 id
             bindCameraUseCase()
         }, 10)
+
+
     }
 
     //카메라 사용
     private fun bindCameraUseCase() = with(binding) {
         val rotation = viewFinder.display.rotation // 회전 값 설정
         val cameraSelector =
-            CameraSelector.Builder().requireLensFacing(LENS_FACING).build() // 카메라 설정(후면)
+            CameraSelector.Builder().requireLensFacing(LENS_FACING_BACK).build() // 카메라 설정(후면)
 
         //카메라를 정상적으로 가져올 수 있는 상태인지 확
         cameraProviderFuture.addListener({
@@ -150,6 +153,23 @@ class MainActivity : AppCompatActivity() {
         }, cameraMainExecutor)
 
     }
+
+    //전면 후면 전환
+//    private fun transformCamera() {
+//
+//        if(CAMERA_FACING == LENS_FACING_FRONT) {
+//            CAMERA_FACING = LENS_FACING_BACK
+//
+//            cameraPreview.removeAllViews()
+//            startCamera()
+//
+//        } else {
+//            CAMERA_FACING = LENS_FACING_FRONT
+//
+//            cameraPreview.removeAllViews()
+//            startCamera()
+//        }
+//    }
 
     // 촬영버튼 캡처 리스너 추가
     private fun bindCaptureListener() = with(binding) {
@@ -287,6 +307,7 @@ class MainActivity : AppCompatActivity() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private val LENS_FACING: Int = CameraSelector.LENS_FACING_BACK
+        private val LENS_FACING_BACK: Int = CameraSelector.LENS_FACING_BACK
+        private val LENS_FACING_FRONT: Int = CameraSelector.LENS_FACING_FRONT
     }
 }
