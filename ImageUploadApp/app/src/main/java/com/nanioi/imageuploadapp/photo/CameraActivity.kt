@@ -197,7 +197,7 @@ class CameraActivity : AppCompatActivity() {
 //    }
 
     private fun bindPreviewImageViewClickListener() = with(binding) {
-        previewImageView.setOnClickListener {
+        previewImageVIew.setOnClickListener {
             startActivityForResult(
                 ImagePreviewListActivity.newIntent(this@CameraActivity, uriList),
                 CONFIRM_IMAGE_REQUEST_CODE
@@ -258,7 +258,7 @@ class CameraActivity : AppCompatActivity() {
                     null
                 )
                 Handler(Looper.getMainLooper()).post {
-                    binding.previewImageView.loadCenterCrop(url = it.toString(), corner = 4f)
+                    binding.previewImageVIew.loadCenterCrop(url = it.toString(), corner = 4f)
                 }
                 if (isFlashEnabled) flashLight(false)
                 uriList.add(it)
