@@ -20,7 +20,7 @@ internal class GalleryPhotoRepository(
             MediaStore.Images.ImageColumns.DISPLAY_NAME,
             MediaStore.Images.ImageColumns.SIZE,
             MediaStore.Images.ImageColumns.DATE_TAKEN,
-            MediaStore.Images.ImageColumns.DATE_ADDED,
+             MediaStore.Images.ImageColumns.DATE_ADDED,
             MediaStore.Images.ImageColumns._ID
         )
         val resolver = context.contentResolver
