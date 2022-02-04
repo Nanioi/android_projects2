@@ -1,4 +1,4 @@
-package com.nanioi.cameraapp
+package aop.fastcampus.part5.chapter03
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -18,15 +18,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+import androidx.camera.core.ImageCapture.FLASH_MODE_AUTO
 import androidx.camera.core.impl.ImageOutputConfig
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
-import com.bumptech.glide.Glide
+import com.nanioi.cameraapp.ImageListActivity
 import com.nanioi.cameraapp.ImageListActivity.Companion.IMAGE_LIST_REQUEST_CODE
 import com.nanioi.cameraapp.databinding.ActivityMainBinding
+import com.nanioi.cameraapp.extensions.clear
 import com.nanioi.cameraapp.extensions.loadCenterCrop
 import com.nanioi.cameraapp.util.PathUtil
 import java.io.File
@@ -35,6 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,8 +68,7 @@ class MainActivity : AppCompatActivity() {
         override fun onDisplayChanged(displayId: Int) {
             if (this@MainActivity.displayId == displayId) {
                 if (::imageCapture.isInitialized && root != null) {
-                    imageCapture.targetRotation =
-                        root?.display?.rotation ?: ImageOutputConfig.INVALID_ROTATION // 화면회전 시 대응
+                    imageCapture.targetRotation = root?.display?.rotation ?: ImageOutputConfig.INVALID_ROTATION
                 }
             }
         }
@@ -76,10 +77,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        root = binding.root
         setContentView(binding.root)
-
-        // 권한을 받아오면 카메라 시
+        root = binding.root
         if (allPermissionsGranted()) {
             startCamera(binding.viewFinder)
         } else {
@@ -87,41 +86,31 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
-
-
     }
 
-    //권한을 얻어오는 함수
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    //카메라 시작
     private fun startCamera(viewFinder: PreviewView) {
         displayManager.registerDisplayListener(displayListener, null)
 
-        //새로운 thread 기반으로 카메라 불러오기
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         viewFinder.postDelayed({
-            displayId = viewFinder.display.displayId // 카메라가 보여지고 있는 display의 id
+            displayId = viewFinder.display.displayId
             bindCameraUseCase()
         }, 10)
-
-
     }
 
-    //카메라 사용
     private fun bindCameraUseCase() = with(binding) {
         val rotation = viewFinder.display.rotation // 회전 값 설정
-        val cameraSelector =
-            CameraSelector.Builder().requireLensFacing(LENS_FACING_BACK).build() // 카메라 설정(후면)
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(LENS_FACING).build() // 카메라 설정(후면)
 
-        //카메라를 정상적으로 가져올 수 있는 상태인지 확
         cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get() // 카메라 객체가져오기
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().apply {
                 setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 setTargetRotation(rotation)
@@ -129,23 +118,22 @@ class MainActivity : AppCompatActivity() {
 
             // imageCapture Init
             val builder = ImageCapture.Builder()
-                .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)//지연 최소화
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3) // preview 비율과 같은 비율로
+                .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
                 .setTargetRotation(rotation)
-                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
+                .setFlashMode(FLASH_MODE_AUTO)
 
             imageCapture = builder.build()
 
-            //lifecycle
             try {
                 cameraProvider.unbindAll() // 기존에 바인딩 되어 있는 카메라는 해제해주어야 함
                 camera = cameraProvider.bindToLifecycle(
                     this@MainActivity, cameraSelector, preview, imageCapture
                 )
-                preview.setSurfaceProvider(viewFinder.surfaceProvider) // 화면상에 매치
+                preview.setSurfaceProvider(viewFinder.surfaceProvider)
                 bindCaptureListener()
                 bindZoomListener()
-                initFlashAndAddListener()
+                bindLightSwitchListener()
                 bindPreviewImageViewClickListener()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -154,40 +142,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //전면 후면 전환
-//    private fun transformCamera() {
-//
-//        if(CAMERA_FACING == LENS_FACING_FRONT) {
-//            CAMERA_FACING = LENS_FACING_BACK
-//
-//            cameraPreview.removeAllViews()
-//            startCamera()
-//
-//        } else {
-//            CAMERA_FACING = LENS_FACING_FRONT
-//
-//            cameraPreview.removeAllViews()
-//            startCamera()
-//        }
-//    }
-
-    // 촬영버튼 캡처 리스너 추가
-    private fun bindCaptureListener() = with(binding) {
-        captureButton.setOnClickListener {
-            if (!isCapturing) {
-                isCapturing = true
-                captureCamera()
-            }
-        }
-    }
-
-    // 줌 기능 함수
     @SuppressLint("ClickableViewAccessibility")
     private fun bindZoomListener() = with(binding) {
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
-                val delta = detector.scaleFactor // 얼마나 움직였나
+                val delta = detector.scaleFactor
                 camera?.cameraControl?.setZoomRatio(currentZoomRatio * delta)
                 return true
             }
@@ -199,65 +159,63 @@ class MainActivity : AppCompatActivity() {
             return@setOnTouchListener true
         }
     }
-    private fun initFlashAndAddListener() = with(binding) {
-        val hasFlash = camera?.cameraInfo?.hasFlashUnit() ?: false
-        flashSwitch.isGone = hasFlash.not()
-        if(hasFlash){
-            flashSwitch.setOnCheckedChangeListener { _, isChecked ->
-                isFlashEnabled = isChecked
+
+    private fun bindCaptureListener() = with(binding) {
+        captureButton.setOnClickListener {
+            if (!isCapturing) {
+                isCapturing = true
+                captureCamera()
             }
-        }else{
-            isFlashEnabled = false
-            flashSwitch.setOnCheckedChangeListener(null)
         }
     }
+
+    private fun bindLightSwitchListener() = with(binding) {
+        flashSwitch.setOnCheckedChangeListener { _, isChecked ->
+            isFlashEnabled = isChecked
+        }
+    }
+
     private fun bindPreviewImageViewClickListener() = with(binding) {
-        previewImageView.setOnClickListener {
+        previewImageVIew.setOnClickListener {
             startActivityForResult(
                 ImageListActivity.newIntent(this@MainActivity, uriList),
                 IMAGE_LIST_REQUEST_CODE
             )
         }
     }
+
     private var contentUri: Uri? = null
 
     private fun captureCamera() {
-        //초기화 되었는지 체크
         if (!::imageCapture.isInitialized) return
-        //외장 디렉토리에 저장
         val photoFile = File(
             PathUtil.getOutputDirectory(this),
             SimpleDateFormat(
                 FILENAME_FORMAT, Locale.KOREA
-            ).format(System.currentTimeMillis()) + ".jpg" // 현재 시간 기준으로 파일명 넣어주기
+            ).format(System.currentTimeMillis()) + ".jpg"
         )
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         if (isFlashEnabled) flashLight(true)
-        imageCapture.takePicture(
-            outputOptions,
-            cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
-                    val rotation = binding.viewFinder.display.rotation // 회전 값 설정
-                    contentUri = savedUri
-                    updateSavedImageContent()
-                }
+        imageCapture.takePicture(outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
+                val rotation = binding.viewFinder.display.rotation // 회전 값 설정
+                contentUri = savedUri
+                updateSavedImageContent()
+            }
 
-                override fun onError(e: ImageCaptureException) {
-                    e.printStackTrace()
-                    isCapturing = false
-                    flashLight(false)
-                }
-            })
+            override fun onError(e: ImageCaptureException) {
+                e.printStackTrace()
+                isCapturing = false
+            }
+        })
 
     }
 
-    //플래시 켜주기
     private fun flashLight(light: Boolean) {
-        val hasFlash = camera?.cameraInfo?.hasFlashUnit() ?:false
-        if (hasFlash) {
+        val hasFlash = camera?.cameraInfo?.hasFlashUnit()
+        if (true == hasFlash) {
             camera?.cameraControl?.enableTorch(light)
         }
     }
@@ -266,38 +224,39 @@ class MainActivity : AppCompatActivity() {
         contentUri?.let {
             isCapturing = try {
                 val file = File(PathUtil.getPath(this, it) ?: throw FileNotFoundException())
-                MediaScannerConnection.scanFile(
-                    this,
-                    arrayOf(file.path),
-                    arrayOf("image/jpeg"),
-                    null
-                )
+                MediaScannerConnection.scanFile(this, arrayOf(file.path), arrayOf("image/jpeg"), null)
                 Handler(Looper.getMainLooper()).post {
-                    binding.previewImageView.loadCenterCrop(url = it.toString(), corner = 4f)
+                    binding.previewImageVIew.loadCenterCrop(url = it.toString(), corner = 4f)
                 }
-                flashLight(false)
-                //if (isFlashEnabled) flashLight(false)
+                if (isFlashEnabled) flashLight(false)
                 uriList.add(it)
                 false
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Toast.makeText(this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
-                flashLight(false)
                 false
             }
         }
     }
 
-    //권한 얻어오기
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 startCamera(binding.viewFinder)
             } else {
-                Toast.makeText(this, "카메라 권한이 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show()
                 finish()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == IMAGE_LIST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            uriList = data?.getParcelableArrayListExtra(ImageListActivity.URI_LIST_KEY) ?: uriList
+            if (uriList.isNotEmpty()) {
+                binding.previewImageVIew.loadCenterCrop(url = uriList.first().toString(), corner = 4f)
+            } else {
+                binding.previewImageVIew.clear()
             }
         }
     }
@@ -307,7 +266,8 @@ class MainActivity : AppCompatActivity() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private val LENS_FACING_BACK: Int = CameraSelector.LENS_FACING_BACK
-        private val LENS_FACING_FRONT: Int = CameraSelector.LENS_FACING_FRONT
+
+        private val LENS_FACING: Int = CameraSelector.LENS_FACING_BACK
     }
+
 }
