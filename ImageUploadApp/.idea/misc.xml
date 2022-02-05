@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/layout/activity_add_article.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_gallery.xml" value="0.15185185185185185" />
+        <entry key="app/src/main/res/layout/fragment_mypage.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/viewholder_image.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/viewholder_photo_item.xml" value="0.12037037037037036" />
       </map>
