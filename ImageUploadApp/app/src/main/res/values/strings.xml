@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ImageUploadApp</string>
+    <string name="app_name">SNS</string>
     <string name="image_preview">이미지 미리보기</string>
     <string name="flash">플래시</string>
     <string name="delete">삭제</string>
