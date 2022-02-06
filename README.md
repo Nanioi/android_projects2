@@ -15,5 +15,5 @@
 
 | 이미지 리스트 첨부 및 여러개 동시 업로드        | 업로드 중 에러 발생 대응|  업로드 결과       | 마이페이지
 | -------------------------------------- | ------------------------------------------- | -------------------------------------- | ------------------------------------------- |
-| ![이미지 리스트 첨부 및 여러개 동시 업로드](https://user-images.githubusercontent.com/52556870/152674167-c6483cf6-76d3-4f27-84f9-fb393d3706dd.jpg) | ![업로드 중 에러 발생 대응](https://user-images.githubusercontent.com/52556870/152674397-25368287-715d-4297-ba2c-7cdf467cd071.jpg) | ![업로드 결과 ](https://user-images.githubusercontent.com/52556870/152674171-d19ee29b-a442-4181-8647-9ba18f6d0f7e.jpg) | ![마이페이지](https://user-images.githubusercontent.com/52556870/152674110-cb35ca4b-abb9-481a-bfe3-d307af2166b3.jpg) |
+| ![이미지 리스트 첨부 및 여러개 동시 업로드](https://user-images.githubusercontent.com/52556870/152674167-c6483cf6-76d3-4f27-84f9-fb393d3706dd.jpg) | ![업로드 중 에러 발생 대응](https://user-images.githubusercontent.com/52556870/152674826-c3283bb4-1620-4f18-ad96-371bdaba996f.jpeg) | ![업로드 결과 ](https://user-images.githubusercontent.com/52556870/152674171-d19ee29b-a442-4181-8647-9ba18f6d0f7e.jpg) | ![마이페이지](https://user-images.githubusercontent.com/52556870/152674110-cb35ca4b-abb9-481a-bfe3-d307af2166b3.jpg) |
 
