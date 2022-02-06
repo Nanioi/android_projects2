@@ -2,14 +2,14 @@
 - 카메라관련 프로젝트 연습
 
 ##### 카메라 앱
-
-| 촬영 및 저장 연습 | 플래시, 줌인/줌아웃 기능 |
-| -------------------------------------- | ------------------------------------------- |
-| ![촬영 및 저장 연습](https://user-images.githubusercontent.com/52556870/152673913-7c936bc9-ecfd-4b25-9053-13eb86f49cf0.jpg) | ![플래시, 줌인/줌아웃 기능](https://user-images.githubusercontent.com/52556870/152673918-49aded8b-e44c-4143-9f49-08f16ce52ce3.jpg) |
-
-| 사진 미리보기 기능 | 사진 삭제 기능 |
-| -------------------------------------- | ------------------------------------------- |
-| ![사진 미리보기 기능](https://user-images.githubusercontent.com/52556870/152673909-b4a6d8fa-6f9a-4b40-9466-f175d7900d69.jpg) | ![사진 삭제 기능](https://user-images.githubusercontent.com/52556870/152673916-fa203533-512e-4a51-b586-b6f3abe5044c.jpg) |
+- 촬영 및 저장 연습
+<img src = "https://user-images.githubusercontent.com/52556870/152673913-7c936bc9-ecfd-4b25-9053-13eb86f49cf0.jpg" width="200">
+- 플래시, 줌인/줌아웃 기능
+<img src = "https://user-images.githubusercontent.com/52556870/152673918-49aded8b-e44c-4143-9f49-08f16ce52ce3.jpg" width="200">
+- 사진 미리보기 기능 
+<img src = "https://user-images.githubusercontent.com/52556870/152673909-b4a6d8fa-6f9a-4b40-9466-f175d7900d69.jpg" width="200">
+- 사진 삭제 기능
+<img src = "https://user-images.githubusercontent.com/52556870/152673916-fa203533-512e-4a51-b586-b6f3abe5044c.jpg" width="200">
 
 ##### 이미지 업로드 앱
 - sns 컨셉에 맞게 ui 수정
