@@ -2,6 +2,7 @@
 - 카메라관련 프로젝트 연습
 
 ##### 카메라 앱
+
 - 촬영 및 저장 연습
 <img src = "https://user-images.githubusercontent.com/52556870/152673913-7c936bc9-ecfd-4b25-9053-13eb86f49cf0.jpg" width="200">
 - 플래시, 줌인/줌아웃 기능
@@ -12,13 +13,15 @@
 <img src = "https://user-images.githubusercontent.com/52556870/152673916-fa203533-512e-4a51-b586-b6f3abe5044c.jpg" width="200">
 
 ##### 이미지 업로드 앱
+
 - sns 컨셉에 맞게 ui 수정
+<img src = "https://user-images.githubusercontent.com/52556870/152674112-a3dd4f2c-744c-4ae1-8a79-27f1a4af57ca.jpg" width="200">
 - 사진첨부 방식 두가지 제공 ( 갤러리, 카메라)
 <img src = "https://user-images.githubusercontent.com/52556870/152674095-0ba4c9f7-5937-4915-90e8-379cdc5ecfdb.jpg" width="200">
 - 카메라 촬영 후 첨부 ( 다중이미지 첨부 가능 )
 <img src = "https://user-images.githubusercontent.com/52556870/152673909-b4a6d8fa-6f9a-4b40-9466-f175d7900d69.jpg" width="200">
 - 갤러리 이미지 선택 후 첨부
-<img src = "https://user-images.githubusercontent.com/52556870/152674112-a3dd4f2c-744c-4ae1-8a79-27f1a4af57ca.jpg" width="200">
+<img src = "https://user-images.githubusercontent.com/52556870/152674551-f448652f-8be1-4226-831b-2fe0b7d972d7.jpg" width="200">
 - 이미지 리스트 첨부 및 여러개 동시 업로드
 <img src = "https://user-images.githubusercontent.com/52556870/152674167-c6483cf6-76d3-4f27-84f9-fb393d3706dd.jpg" width="200">
 - 업로드 중 에러 발생 대응
